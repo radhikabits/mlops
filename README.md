@@ -70,7 +70,18 @@ venv\Scripts\activate        # On Windows
 # Install dependencies (if any)
 pip install -r requirements.txt
 
-# Running Tests
+# To Run the API
+uvicorn api.main:app --reload
+
+API base URL: http://127.0.0.1:8000
+
+Interactive Swagger Docs: http://127.0.0.1:8000/docs
+
+ReDoc Docs: http://127.0.0.1:8000/redoc
+
+Health Check Endpoint: http://127.0.0.1:8000/health
+
+# To Run the Tests
 pytest tests/
 
 

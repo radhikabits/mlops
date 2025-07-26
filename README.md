@@ -5,6 +5,7 @@
 
 This project demonstrates a complete **MLOps pipeline** using best practices. The goal is to train, track, version, deploy, and monitor a machine learning model using a well-known dataset: **California Housing** (regression task) or **Iris** (classification task).
 
+We have chosen dataset: **California Housing**
 ---
 
 ## Objectives

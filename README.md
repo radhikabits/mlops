@@ -111,3 +111,26 @@ The California Housing dataset is preprocessed before model training to ensure d
 # How to Run
 py "src\preprocess.py"
 
+# Model Training with MLflow
+# We use MLflow to manage the end-to-end model lifecycle:
+
+1. Train two models: Linear Regression and Decision Tree
+
+2. Log parameters, metrics (MSE, R²), and artifacts
+
+3. Compare and select the best model
+
+4. Register the best model in the MLflow Model Registry
+
+🔧 How to Run
+# Train models and log experiments
+
+python src/train_linear.py
+python src/train_tree.py
+
+# Select and register the best model
+python src/select_best_and_register.py
+
+# Launch MLflow UI (optional)
+mlflow ui  # Visit http://127.0.0.1:5000
+ 

@@ -12,7 +12,7 @@ from utils.logger import get_logger
 
 logger = get_logger(__name__)
 
-def train():
+def train_linear_regression():
     """
     Train a Linear Regression model using preprocessed California Housing data,
     log experiment with MLflow, and save the trained model.
@@ -37,7 +37,6 @@ def train():
             model.fit(X_train, y_train)
 
             logger.info("Model training complete. Evaluating...")
-            duration = time.time() - start_time
             logger.info(f"Training completed in {duration:.2f} seconds.")
             
             y_pred = model.predict(X_test)
@@ -48,9 +47,8 @@ def train():
             mlflow.log_params(params)
             mlflow.log_metric("mse", mse)
             mlflow.log_metric("r2", r2)       
-            mlflow.log_metric("training_duration_sec", duration)
 
-            logger.info(f"Logged metrics - MSE: {mse:.4f}, R2: {r2:.4f}, Duration: {duration:.2f} seconds")
+            logger.info(f"Logged metrics - MSE: {mse:.4f}, R2: {r2:.4f}")
 
             # Log model artifact to MLflow
             mlflow.sklearn.log_model(model, "model")
@@ -62,6 +60,10 @@ def train():
             logger.info(f"Model saved to {model_path}")
     except Exception as e:
         logger.exception(f"Training failed: {str(e)}")
+    finally:
+        duration = time.time() - start_time
+        logger.info(f"Total training time: {duration:.2f} seconds")
+        mlflow.log_metric("training_time_sec", duration)
 
 if __name__ == "__main__":
-    train()
+    train_linear_regression()

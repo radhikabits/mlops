@@ -85,4 +85,20 @@ Health Check Endpoint: http://127.0.0.1:8000/health
 # To Run the Tests
 pytest tests/
 
+# Raw Data
+# Run below file to fetch the raw data
+py "src\fetch_data.py"
+
+# Data Version Control, is an open-source tool that helps you manage and version control data
+
+# How It Works
+- dvc init → Sets up DVC in your Git repo.
+- Starts tracking your dataset.
+    dvc add data/raw/housing.csv (to track it with DVC)
+- dvc push → Uploads data to remote storage.
+- dvc pull → Downloads exact data version when needed.
+- dvc run → Defines pipeline stages with dependencies and outputs.
+
+
+
 

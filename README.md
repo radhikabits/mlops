@@ -99,6 +99,15 @@ py "src\fetch_data.py"
 - dvc pull → Downloads exact data version when needed.
 - dvc run → Defines pipeline stages with dependencies and outputs.
 
+# Preprocessing
+The California Housing dataset is preprocessed before model training to ensure data quality and consistency. Preprocessing includes:
 
+1. Dropping missing values
+2. Removing outliers using the IQR method
+3. Feature-target separation
+4. Scaling features with StandardScaler
+5. Splitting into training and testing sets
 
+# How to Run
+py "src\preprocess.py"
 

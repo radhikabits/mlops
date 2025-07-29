@@ -128,9 +128,17 @@ py "src\preprocess.py"
 python src/train_linear.py
 python src/train_tree.py
 
-# Select and register the best model
-python src/select_best_and_register.py
-
 # Launch MLflow UI (optional)
 mlflow ui  # Visit http://127.0.0.1:5000
- 
+
+## # Select and register the best model
+
+After training multiple models, the `select_best_and_register.py` script compares them using a selected metric (default: `mse`) and registers the best-performing model in MLflow.
+
+**Steps Performed:**
+- Retrieves the MLflow experiment runs
+- Selects the run with the lowest MSE
+- Checks if the model is already registered
+- Registers the model (or adds a new version)
+
+python src/select_best_and_register.py

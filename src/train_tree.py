@@ -7,6 +7,8 @@ import time
 import numpy as np
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import mean_squared_error, r2_score
+
+# Add project root to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from utils.common import load_config, save_model
 from utils.logger import get_logger
@@ -15,8 +17,15 @@ logger = get_logger(__name__)
 
 def train_decision_tree():
     """
-    Train a Decision Tree Regressor model using preprocessed California Housing data
-    log experiment with MLflow, and save the trained model.
+    Train a Decision Tree Regressor on preprocessed California Housing data.
+    Logs the model training run using MLflow, including:
+    - Parameters and metrics (MSE, R²)
+    - Input signature and input example
+    - Training time
+    - Model artifacts (saved locally and to MLflow)
+
+    Raises:
+        Exception: If training or logging fails
     """
     start_time = time.time()
     try:
@@ -24,6 +33,7 @@ def train_decision_tree():
         config = load_config()
         params = config["decision_tree"]
 
+        # Load preprocessed data
         X_train = np.load("data/processed/X_train.npy")
         X_test = np.load("data/processed/X_test.npy")
         y_train = np.load("data/processed/y_train.npy")

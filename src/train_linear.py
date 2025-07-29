@@ -6,6 +6,8 @@ import mlflow.sklearn
 import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
+
+# Add project root to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from utils.common import load_config, save_model
 from utils.logger import get_logger
@@ -14,16 +16,21 @@ logger = get_logger(__name__)
 
 def train_linear_regression():
     """
-    Train a Linear Regression model using preprocessed California Housing data,
-    log experiment with MLflow, and save the trained model.
+    Train a Linear Regression model on California Housing data,
+    log experiment using MLflow, and persist the best model.
+    Logs:
+        - Model parameters from config.yaml
+        - MSE and R² as evaluation metrics
+        - Training duration
+        - Trained model artifact to MLflow
     """
-    logger.info("Loading configuration and data...")
-    
     start_time = time.time()
+    logger.info("Loading configuration and data...")
+    # Load configuration
     config = load_config()
     params = config.get('linear_regression', {})
 
-    # Define data paths
+    # Load training data
     data_dir = "data/processed"
     X_train = np.load(os.path.join(data_dir, "X_train.npy"))
     X_test = np.load(os.path.join(data_dir, "X_test.npy"))
@@ -50,8 +57,14 @@ def train_linear_regression():
 
             logger.info(f"Logged metrics - MSE: {mse:.4f}, R2: {r2:.4f}")
 
-            # Log model artifact to MLflow
-            mlflow.sklearn.log_model(model, "model")
+            # Log model with signature and input example (optional but recommended)
+            input_example = X_test[:5]  # small batch
+            mlflow.sklearn.log_model(
+                model,
+                "model",
+                input_example=input_example,
+                registered_model_name=None  
+            )
             logger.info("Model logged to MLflow.")
 
             # Save model locally

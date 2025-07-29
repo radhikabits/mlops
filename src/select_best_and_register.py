@@ -1,6 +1,7 @@
 import os
 import sys
 from typing import Optional
+import mlflow
 from mlflow.tracking import MlflowClient
 from mlflow.exceptions import RestException
 from mlflow.entities import Run
@@ -36,16 +37,17 @@ def register_best_model(
 
         # Get the experiment
         experiment = client.get_experiment_by_name(experiment_name)
-        if experiment is None:
-            logger.error(f"Experiment '{experiment_name}' not found.")
-            return None
+        if experiment:
+            experiment_id = experiment.experiment_id
+        else:
+            experiment_id = mlflow.create_experiment(experiment_name)
 
         order = "DESC" if greater_is_better else "ASC"
         logger.info(f"Searching best run in experiment '{experiment_name}' by metric '{metric_key}' ({order})")
 
         # Search for the best run
         runs = client.search_runs(
-            experiment_ids=[experiment.experiment_id],
+            experiment_ids=[experiment_id],
             order_by=[f"metrics.{metric_key} {order}"],
             max_results=1
         )

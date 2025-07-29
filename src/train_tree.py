@@ -28,18 +28,19 @@ def train_decision_tree():
         Exception: If training or logging fails
     """
     start_time = time.time()
+    logger.info("Loading configuration and data...")
+    config = load_config()
+    params = config["decision_tree"]
+
+    # Load preprocessed data
+    X_train = np.load("data/processed/X_train.npy")
+    X_test = np.load("data/processed/X_test.npy")
+    y_train = np.load("data/processed/y_train.npy")
+    y_test = np.load("data/processed/y_test.npy")
+
+    logger.info("Starting MLflow run for Decision Tree...")
     try:
-        logger.info("Loading configuration and data...")
-        config = load_config()
-        params = config["decision_tree"]
-
-        # Load preprocessed data
-        X_train = np.load("data/processed/X_train.npy")
-        X_test = np.load("data/processed/X_test.npy")
-        y_train = np.load("data/processed/y_train.npy")
-        y_test = np.load("data/processed/y_test.npy")
-
-        logger.info("Starting MLflow run for Decision Tree...")
+        mlflow.set_experiment("california_housing")
         with mlflow.start_run(run_name="DecisionTreeRegressor"):
             model = DecisionTreeRegressor(max_depth=params["max_depth"])
             model.fit(X_train, y_train)

@@ -39,6 +39,7 @@ def train_linear_regression():
 
     logger.info("Starting MLflow run for Linear Regression...")
     try:
+        mlflow.set_experiment("california_housing")
         with mlflow.start_run(run_name="LinearRegression"):
             model = LinearRegression()
             model.fit(X_train, y_train)

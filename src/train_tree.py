@@ -53,7 +53,7 @@ def train_decision_tree():
             mlflow.log_params(params)
             mlflow.log_metric("mse", mse)
             mlflow.log_metric("r2", r2)
-
+            logger.info(f"Model training complete. MSE: {mse:.4f}, R2: {r2:.4f}")
             # Infer signature and log model with input example
             signature = infer_signature(X_test, y_pred)
             input_example = X_test[:1]
@@ -61,15 +61,15 @@ def train_decision_tree():
             mlflow.sklearn.log_model(
                 sk_model=model,
                 artifact_path="model",
-                signature=signature,
                 input_example=input_example,
-                registered_model_name=None  # or "decision_tree_model" if using model registry
+                signature=signature,
+                registered_model_name="decision_tree"
             )
 
             # Save locally
-            save_model(model, "models/decision_tree.pkl")
-
-            logger.info(f"Model training complete. MSE: {mse:.4f}, R2: {r2:.4f}")
+            model_path = os.path.join("models", "decision_tree.pkl")
+            save_model(model, model_path)
+            logger.info(f"Model saved to {model_path}")
     except Exception as e:
         logger.exception("Error occurred during Decision Tree training.")
         raise e

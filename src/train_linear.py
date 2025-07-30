@@ -45,8 +45,7 @@ def train_linear_regression():
             model.fit(X_train, y_train)
 
             logger.info("Model training complete. Evaluating...")
-            logger.info(f"Training completed in {duration:.2f} seconds.")
-            
+                        
             y_pred = model.predict(X_test)
             mse = mean_squared_error(y_test, y_pred)
             r2 = r2_score(y_test, y_pred)
@@ -61,13 +60,15 @@ def train_linear_regression():
             # Log model with signature and input example (optional but recommended)
             input_example = X_test[:5]  # small batch
             mlflow.sklearn.log_model(
-                model,
-                "model",
+                sk_model=model,
+                artifact_path="model",
                 input_example=input_example,
-                registered_model_name=None  
+                registered_model_name="linear_regression"
             )
             logger.info("Model logged to MLflow.")
-
+            artifact_uri = mlflow.get_artifact_uri("model")
+            print(f"Model logged at: {artifact_uri}")
+            
             # Save model locally
             model_path = os.path.join("models", "linear_regression.pkl")
             save_model(model, model_path)

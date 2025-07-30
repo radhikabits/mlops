@@ -5,6 +5,7 @@
 
 This project demonstrates a complete **MLOps pipeline** using best practices. The goal is to train, track, version, deploy, and monitor a machine learning model using a well-known dataset: **California Housing** (regression task) or **Iris** (classification task).
 
+We have chosen dataset: **California Housing**
 ---
 
 ## Objectives
@@ -70,7 +71,77 @@ venv\Scripts\activate        # On Windows
 # Install dependencies (if any)
 pip install -r requirements.txt
 
-# Running Tests
+# To Run the API
+cd api
+uvicorn api.main:app --reload
+ # in debug mode
+ uvicorn main:app --reload --log-level debug
+
+API base URL: http://127.0.0.1:8000
+
+Interactive Swagger Docs: http://127.0.0.1:8000/docs
+
+ReDoc Docs: http://127.0.0.1:8000/redoc
+
+Health Check Endpoint: http://127.0.0.1:8000/health
+
+# To Run the Tests
 pytest tests/
 
+# Raw Data
+# Run below file to fetch the raw data
+py "src\fetch_data.py"
 
+# Data Version Control, is an open-source tool that helps you manage and version control data
+
+# How It Works
+- dvc init → Sets up DVC in your Git repo.
+- Starts tracking your dataset.
+    dvc add data/raw/housing.csv (to track it with DVC)
+- dvc push → Uploads data to remote storage.
+- dvc pull → Downloads exact data version when needed.
+- dvc run → Defines pipeline stages with dependencies and outputs.
+
+# Preprocessing
+The California Housing dataset is preprocessed before model training to ensure data quality and consistency. Preprocessing includes:
+
+1. Dropping missing values
+2. Removing outliers using the IQR method
+3. Feature-target separation
+4. Scaling features with StandardScaler
+5. Splitting into training and testing sets
+
+# How to Run
+py "src\preprocess.py"
+
+# Model Training with MLflow
+# We use MLflow to manage the end-to-end model lifecycle:
+
+1. Train two models: Linear Regression and Decision Tree
+
+2. Log parameters, metrics (MSE, R²), and artifacts
+
+3. Compare and select the best model
+
+4. Register the best model in the MLflow Model Registry
+
+🔧 How to Run
+# Train models and log experiments
+
+python src/train_linear.py
+python src/train_tree.py
+
+# Launch MLflow UI (optional)
+mlflow ui  # Visit http://127.0.0.1:5000
+
+## # Select and register the best model
+
+After training multiple models, the `select_best_and_register.py` script compares them using a selected metric (default: `mse`) and registers the best-performing model in MLflow.
+
+**Steps Performed:**
+- Retrieves the MLflow experiment runs
+- Selects the run with the lowest MSE
+- Checks if the model is already registered
+- Registers the model (or adds a new version)
+
+python src/select_best_and_register.py

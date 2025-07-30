@@ -72,7 +72,10 @@ venv\Scripts\activate        # On Windows
 pip install -r requirements.txt
 
 # To Run the API
+cd api
 uvicorn api.main:app --reload
+ # in debug mode
+ uvicorn main:app --reload --log-level debug
 
 API base URL: http://127.0.0.1:8000
 

@@ -1,6 +1,6 @@
 """FastAPI Module"""
 from fastapi import FastAPI
-from .router import agent
+from router import agent
  
  
 # Create FastAPI app

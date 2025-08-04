@@ -176,3 +176,10 @@ pytest tests/
     5. You can now visit:
         API: http://localhost:8000
         MLflow UI: http://localhost:5000
+# CICD
+1. GitHub Secrets
+- Go to your GitHub repo → Settings → Secrets and variables → Actions → New repository secret, and
+    Secret  Name	            Description
+    DOCKERHUB_USERNAME	    Your Docker Hub username
+    DOCKERHUB_TOKEN	        Docker Hub access token/password
+    DOCKER_IMAGE_NAME	    e.g., yourusername/mlops-api

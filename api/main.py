@@ -4,7 +4,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from router import agent
- 
+
 # Load environment variables
 if os.environ.get("DOCKER_ENV", "false").lower() == "true":
     # Running in Docker – load Docker-specific env
@@ -23,10 +23,10 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc"
 )
- 
+
 app.include_router(agent.router)
- 
- 
+
+
 # Health check endpoint
 @app.get("/health")
 async def health():

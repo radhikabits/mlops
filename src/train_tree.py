@@ -1,8 +1,6 @@
 """train_tree.py
 This script trains a Decision Tree Regressor on the California Housing dataset,"""
 import os
-from pathlib import Path
-from dotenv import load_dotenv
 import sys
 import mlflow
 import mlflow.sklearn
@@ -20,6 +18,7 @@ from utils.logger import get_logger
 logger = get_logger(__name__)
 
 load_environment_variables()
+
 
 def train_decision_tree():
     """
@@ -87,6 +86,7 @@ def train_decision_tree():
         duration = time.time() - start_time
         logger.info(f"Total training time: {duration:.2f} seconds")
         mlflow.log_metric("training_time_sec", duration)
+
 
 if __name__ == "__main__":
     train_decision_tree()

@@ -1,7 +1,7 @@
 # Import necessary libraries
 import os
-import pandas as pd
 from sklearn.datasets import fetch_california_housing
+
 
 def save_housing_data(output_dir: str = "data/raw", filename: str = "housing.csv") -> None:
     """
@@ -27,6 +27,7 @@ def save_housing_data(output_dir: str = "data/raw", filename: str = "housing.csv
     df.to_csv(output_path, index=False)
 
     print(f"Data successfully saved to {output_path}")
+
 
 if __name__ == "__main__":
     # Entry point of the script

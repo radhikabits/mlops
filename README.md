@@ -183,3 +183,6 @@ pytest tests/
     DOCKERHUB_USERNAME	    Your Docker Hub username
     DOCKERHUB_TOKEN	        Docker Hub access token/password
     DOCKER_IMAGE_NAME	    e.g., yourusername/mlops-api
+
+# Run flake8
+flake8 .

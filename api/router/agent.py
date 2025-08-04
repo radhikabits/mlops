@@ -4,7 +4,7 @@ from models import PredictionRequest, PredictionResponse
 from fastapi import APIRouter
 from fastapi import HTTPException
 from model_loader import load_best_model_from_registry
-from logger import get_logger  
+from logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -12,6 +12,7 @@ router = APIRouter(
     prefix="/agents",
     tags=["agents"],
 )
+
 
 @router.post("/prediction", response_model=PredictionResponse)
 async def prediction(request: PredictionRequest):
@@ -35,4 +36,3 @@ async def prediction(request: PredictionRequest):
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
         raise HTTPException(status_code=500, detail="An unexpected error occurred.") from e
-    

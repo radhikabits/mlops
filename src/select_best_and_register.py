@@ -8,9 +8,10 @@ from mlflow.tracking import MlflowClient
 from mlflow.exceptions import RestException
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from utils.logger import get_logger
-from utils.common import load_config, save_model, load_environment_variables
+from utils.common import load_environment_variables
 
 logger = get_logger(__name__)
+
 
 def register_best_from_registry(
     candidate_models: list,
@@ -75,7 +76,7 @@ if __name__ == "__main__":
     load_environment_variables()
     # Load tracking URI from environment variable
     TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
-    
+
     register_best_from_registry(
         candidate_models=["decision_tree", "linear_regression"],
         metric_key="mse",

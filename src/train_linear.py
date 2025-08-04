@@ -19,6 +19,7 @@ logger = get_logger(__name__)
 
 load_environment_variables()
 
+
 def train_linear_regression():
     """
     Train a Linear Regression model on California Housing data,
@@ -49,13 +50,13 @@ def train_linear_regression():
         logger.info(f"MLflow Tracking URI: {tracking_url}")
         mlflow.set_tracking_uri(tracking_url)
         mlflow.set_experiment("california_housing")
-        
+
         with mlflow.start_run(run_name="LinearRegression"):
             model = LinearRegression()
             model.fit(X_train, y_train)
 
             logger.info("Model training complete. Evaluating...")
-                        
+
             y_pred = model.predict(X_test)
             mse = mean_squared_error(y_test, y_pred)
             r2 = r2_score(y_test, y_pred)
@@ -63,8 +64,7 @@ def train_linear_regression():
             # Log hyperparameters and metrics
             mlflow.log_params(params)
             mlflow.log_metric("mse", mse)
-            mlflow.log_metric("r2", r2)       
-
+            mlflow.log_metric("r2", r2)
             logger.info(f"Logged metrics - MSE: {mse:.4f}, R2: {r2:.4f}")
 
             # Log model with signature and input example (optional but recommended)
@@ -78,7 +78,6 @@ def train_linear_regression():
             logger.info("Model logged to MLflow.")
             artifact_uri = mlflow.get_artifact_uri("model")
             logger.info(f"Model logged at: {artifact_uri}")
-            
             # Save model locally
             model_path = os.path.join("models", "linear_regression.pkl")
             save_model(model, model_path)
@@ -89,6 +88,7 @@ def train_linear_regression():
         duration = time.time() - start_time
         logger.info(f"Total training time: {duration:.2f} seconds")
         mlflow.log_metric("training_time_sec", duration)
+
 
 if __name__ == "__main__":
     train_linear_regression()

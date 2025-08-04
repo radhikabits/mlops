@@ -1,7 +1,6 @@
 import os
-from pathlib import Path
 import mlflow
-from logger import get_logger 
+from logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -9,13 +8,13 @@ logger = get_logger(__name__)
 mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
 mlflow.set_registry_uri(os.getenv("MLFLOW_TRACKING_URI"))
 
+
 def load_best_model_from_registry(
     model_name: str = "best_model",
     stage: str = None
 ):
     """
     Loads the best model from the MLflow model registry.
-    
     Args:
         model_name (str): Name of the registered model.
         stage (str): Stage to load the model from ('Production', 'Staging', etc.).

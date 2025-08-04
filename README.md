@@ -49,6 +49,7 @@ mlops/
 ├── test/                   → Contains pytest
 ├── dvc.yaml                → DVC pipeline file (for California Housing)
 ├── mlruns/                 → MLflow tracking logs
+├── docker-cpmpose.yml      → compose file
 ├── model/                  → Saved model artifacts
 ├── logs/                   → Prediction and app logs
 ├── README.md               → Project summary (this file)
@@ -146,11 +147,8 @@ uvicorn main:app --reload
 uvicorn main:app --reload --log-level debug
 
 API base URL: http://127.0.0.1:8000
-
 Interactive Swagger Docs: http://127.0.0.1:8000/docs
-
 ReDoc Docs: http://127.0.0.1:8000/redoc
-
 Health Check Endpoint: http://127.0.0.1:8000/health
 
 # To Run the Tests
@@ -162,13 +160,19 @@ pytest tests/
     1. Go to Docker official website
         https://www.docker.com/products/docker-desktop/
     2. Download Docker Desktop for Windows
-
     3. Install it following the instructions.
-
     4. Restart your machine after installation (important).
+# Install WSL
+    1. wsl --install
 
-# Build the image
-docker build -t mlops-api -f docker/Dockerfile .
-
-# Run the container
-docker run -p 8000:8000 mlops-api
+# Build the image and run the container
+    1. Open WSL Terminal or PowerShell
+    2. Navigate to Your Project Directory
+        cd /mnt/c/BITS/Degree/Sem3/MLOps/Assignment/mlops
+    3. Build the Docker Image
+        docker-compose build
+    4. Run the Docker Container
+        docker-compose up
+    5. You can now visit:
+        API: http://localhost:8000
+        MLflow UI: http://localhost:5000

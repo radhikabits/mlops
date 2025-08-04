@@ -26,19 +26,26 @@ mlops/
 ├── data/                   → Raw and processed datasets
 │   ├── raw/                 
 │   └── processed/
-├── notebooks/              → EDA and experiment notebooks
 ├── src/
-│   ├── data/               → Preprocessing scripts
-│   ├── models/             → Training, evaluation, prediction scripts
-│   ├── utils/              → Logger and input schemas
-│   └── config.py           → Configuration and parameters
+│   ├── fetch_data.py       → Fetches the California housing dataset
+│   ├── preprocess.py       → Preprocessing script
+│   ├── train_linear.py     → trains a Linear Regression model
+│   ├── train_tree.py       → trains a Decision Tree model
+│   └── select_best_and_register.py  → selects the best model from the MLflow registry
+├── utils/
+│   ├── common.py
+│   ├── config.ymal
+│   ├── logger.py    
 ├── api/
-│   ├── app.py              → FastAPI app with prediction endpoint
+│   ├── router/agent.py     → FastAPI app with prediction endpoint
 │   ├── main.py             → Entrypoint for running the API
 │   └── requirements.txt    → API dependencies
+│   └── logger.py
+│   └── models.py    → API models
+│   └── model_loader.py      
 ├── docker/
 │   ├── Dockerfile          → Docker build file
-│   └── entrypoint.sh       → Startup script (if needed)
+│   └── Dockerfile.trainer
 ├── test/                   → Contains pytest
 ├── dvc.yaml                → DVC pipeline file (for California Housing)
 ├── mlruns/                 → MLflow tracking logs
@@ -71,24 +78,9 @@ venv\Scripts\activate        # On Windows
 # Install dependencies (if any)
 pip install -r requirements.txt
 
-# To Run the API
-cd api
-uvicorn api.main:app --reload
- # in debug mode
- uvicorn main:app --reload --log-level debug
+# Steps to follow
 
-API base URL: http://127.0.0.1:8000
-
-Interactive Swagger Docs: http://127.0.0.1:8000/docs
-
-ReDoc Docs: http://127.0.0.1:8000/redoc
-
-Health Check Endpoint: http://127.0.0.1:8000/health
-
-# To Run the Tests
-pytest tests/
-
-# Raw Data
+# 1. Raw Data
 # Run below file to fetch the raw data
 py "src\fetch_data.py"
 
@@ -102,7 +94,7 @@ py "src\fetch_data.py"
 - dvc pull → Downloads exact data version when needed.
 - dvc run → Defines pipeline stages with dependencies and outputs.
 
-# Preprocessing
+# 2. Preprocessing
 The California Housing dataset is preprocessed before model training to ensure data quality and consistency. Preprocessing includes:
 
 1. Dropping missing values
@@ -125,7 +117,7 @@ py "src\preprocess.py"
 
 4. Register the best model in the MLflow Model Registry
 
-🔧 How to Run
+🔧 3. How to Run
 # Train models and log experiments
 
 python src/train_linear.py
@@ -134,7 +126,7 @@ python src/train_tree.py
 # Launch MLflow UI (optional)
 mlflow ui  # Visit http://127.0.0.1:5000
 
-## # Select and register the best model
+# 4. Select and register the best model
 
 After training multiple models, the `select_best_and_register.py` script compares them using a selected metric (default: `mse`) and registers the best-performing model in MLflow.
 
@@ -145,3 +137,38 @@ After training multiple models, the `select_best_and_register.py` script compare
 - Registers the model (or adds a new version)
 
 python src/select_best_and_register.py
+
+# To Run the API
+cd api
+pip install -r requirements.txt
+uvicorn main:app --reload
+ # in debug mode
+uvicorn main:app --reload --log-level debug
+
+API base URL: http://127.0.0.1:8000
+
+Interactive Swagger Docs: http://127.0.0.1:8000/docs
+
+ReDoc Docs: http://127.0.0.1:8000/redoc
+
+Health Check Endpoint: http://127.0.0.1:8000/health
+
+# To Run the Tests
+pytest tests/
+
+# Build and run the Docker container
+
+# Install Docker Desktop
+    1. Go to Docker official website
+        https://www.docker.com/products/docker-desktop/
+    2. Download Docker Desktop for Windows
+
+    3. Install it following the instructions.
+
+    4. Restart your machine after installation (important).
+
+# Build the image
+docker build -t mlops-api -f docker/Dockerfile .
+
+# Run the container
+docker run -p 8000:8000 mlops-api

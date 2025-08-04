@@ -13,21 +13,19 @@ router = APIRouter(
     tags=["agents"],
 )
 
-# Load the model once on import
-# model = load_best_model_from_registry()
-# print(f"Model loaded: {model is not None}")
-
 @router.post("/prediction", response_model=PredictionResponse)
 async def prediction(request: PredictionRequest):
     """Endpoint to generate predictions based on input features."""
+    logger.info(f"Incoming prediction request: {request.dict()}")
     try:
+        # Load the model on demand
         model = load_best_model_from_registry()  # Load on demand
         if model is None:
             raise RuntimeError("Model not loaded. Check MLflow registry or URI.")
 
         input_df = pd.DataFrame([request.dict()])
         prediction = model.predict(input_df)
-
+        logger.info(f"Model prediction response: {prediction.tolist()}")
         return PredictionResponse(predicted_price=float(prediction[0]))
 
     except ValueError as e:

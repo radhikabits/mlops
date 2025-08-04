@@ -1,3 +1,5 @@
+"""Preprocessing script for the California Housing dataset.
+This script loads the dataset, removes outliers, scales features, and splits the data into training"""
 import os
 import sys
 import pandas as pd

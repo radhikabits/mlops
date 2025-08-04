@@ -5,9 +5,9 @@ from logger import get_logger
 
 logger = get_logger(__name__)
 
-# Dynamically get path to `mlruns` relative to this file
-mlruns_path = Path(__file__).resolve().parents[1] / "mlruns"
-mlflow.set_tracking_uri(f"file:///{mlruns_path.as_posix()}")
+# Set MLflow Tracking URI from env variable
+mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
+mlflow.set_registry_uri(os.getenv("MLFLOW_TRACKING_URI"))
 
 def load_best_model_from_registry(
     model_name: str = "best_model",
@@ -25,11 +25,12 @@ def load_best_model_from_registry(
         Loaded MLflow model or None if loading fails.
     """
     try:
-        if stage == "None":
+        logger.info(f"Tracking URI: {mlflow.get_tracking_uri()}")
+        if stage is None:
             model_uri = f"models:/{model_name}/latest"
         else:
             model_uri = f"models:/{model_name}/{stage}"
-
+        logger.info(f"Loading model from URI: {model_uri}")
         model = mlflow.pyfunc.load_model(model_uri)
         logger.info(f"Successfully loaded model '{model_name}' from stage '{stage}'.")
         return model

@@ -1,0 +1,72 @@
+services:
+  db-init:
+    # only runs once to create folders with correct perms
+    image: alpine
+    volumes:
+      - ./mlflow:/mlflow
+    entrypoint: |
+      sh -c "mkdir -p /mlflow/db /mlflow/artifacts &&
+             chown -R 0:0 /mlflow/db /mlflow/artifacts"
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v3.2.0rc0
+    depends_on: ["db-init"]
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlflow:/mlflow:rw
+    environment:
+      # specify the URI explicitly
+      - MLFLOW_TRACKING_URI=http://0.0.0.0:5000
+    command:
+      - mlflow
+      - server
+      - --backend-store-uri
+      - sqlite:////mlflow/db/mlflow.db
+      - --default-artifact-root
+      - /mlflow/artifacts
+      - --serve-artifacts
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "5000"
+
+  trainer:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.trainer
+    container_name: mlops_trainer
+    depends_on:
+      - mlflow
+    working_dir: /app
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    volumes:
+      - .:/app
+      - ./mlruns:/mlflow/artifacts
+      - ./mlflow.db:/mlflow/db/mlflow.db
+    command: >
+      /bin/bash -c "
+      python src/fetch_data.py &&
+      python src/preprocess.py &&
+      python src/train_linear.py &&
+      python src/train_tree.py &&
+      python src/select_best_and_register.py
+      "
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: mlops_api
+    depends_on:
+      - mlflow
+    ports:
+      - "8000:8000"
+    env_file:
+      - api/.env.api
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    volumes:
+      - ./mlruns:/mlflow/artifacts
+      - ./mlflow.db:/mlflow/db/mlflow.db

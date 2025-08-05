@@ -185,4 +185,4 @@ pytest tests/
     DOCKER_IMAGE_NAME	    e.g., yourusername/mlops-api
 
 # Run flake8
-flake8 .
+flake8 . # This is a linting tool for enforcing coding style in Python code

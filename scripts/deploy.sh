@@ -11,10 +11,10 @@ docker pull ${DOCKERHUB_USERNAME}/mlops-api:latest
 docker pull ${DOCKERHUB_USERNAME}/trainer:latest
 
 echo "[INFO] Stopping existing containers..."
-docker-compose --env-file docker/.env down
+docker compose --env-file docker/.env down
 
-echo "[INFO] Starting services using docker-compose..."
-docker-compose --env-file docker/.env up -d
+echo "[INFO] Starting services using docker compose..."
+docker compose --env-file docker/.env up -d
 
 echo "[INFO] Waiting for containers to stabilize..."
 sleep 5

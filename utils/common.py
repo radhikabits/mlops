@@ -4,14 +4,19 @@ import joblib
 import os
 from dotenv import load_dotenv
 
+
 def load_config():
+    """Load configuration from config.yaml file."""
     config_path = os.path.join(os.path.dirname(__file__), 'config.yaml')
     with open(config_path) as f:
         return yaml.safe_load(f)
 
+
 def save_model(model, path):
+    """Save the model to the specified path using joblib."""
     os.makedirs(os.path.dirname(path), exist_ok=True)
     joblib.dump(model, path)
+
 
 def load_environment_variables():
     """Load environment variables from .env file."""

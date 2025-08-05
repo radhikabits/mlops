@@ -1,7 +1,9 @@
 import os
 import logging
 
+
 def get_logger(name=None):
+    """Get a logger with the specified name."""
     logger = logging.getLogger(name)
 
     if logger.handlers:

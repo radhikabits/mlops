@@ -1,8 +1,10 @@
 #!/bin/bash
 set -e
 
-echo "[INFO] Loading environment variables..."
-source docker/.env
+echo "[INFO] Environment variables loaded from GitHub Actions context."
+
+# Validate required variables
+: "${DOCKERHUB_USERNAME:?DOCKERHUB_USERNAME is not set}"
 
 echo "[INFO] Pulling latest images from Docker Hub..."
 docker pull ${DOCKERHUB_USERNAME}/mlops-api:latest

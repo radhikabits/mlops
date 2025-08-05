@@ -32,13 +32,23 @@ jobs:
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-      - name: Build Docker Image
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:latest -f docker/Dockerfile .
+      - name: Set Image Tag
+        id: vars
+        run: echo "IMAGE_TAG=$(date +%s)" >> $GITHUB_ENV
 
-      - name: Push Docker Image
+      - name: Build Trainer Image
         run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:latest
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/trainer:latest -f docker/Dockerfile.trainer .
+
+      - name: Build API Image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/mlops-api:latest -f docker/Dockerfile .
+
+      - name: Push Trainer Image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/trainer:latest
+
+      - name: Push API Image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/mlops-api:latest
       
       - name: Make deploy script executable
         run: chmod +x scripts/deploy.sh

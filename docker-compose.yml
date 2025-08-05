@@ -1,22 +1,22 @@
 services:
   db-init:
-    # only runs once to create folders with correct perms
     image: alpine
     volumes:
       - ./mlflow:/mlflow
-    entrypoint: |
+    entrypoint: >
       sh -c "mkdir -p /mlflow/db /mlflow/artifacts &&
              chown -R 0:0 /mlflow/db /mlflow/artifacts"
+    restart: "no"
 
   mlflow:
     image: ghcr.io/mlflow/mlflow:v3.2.0rc0
-    depends_on: ["db-init"]
+    depends_on:
+      - db-init
     ports:
       - "5000:5000"
     volumes:
       - ./mlflow:/mlflow:rw
     environment:
-      # specify the URI explicitly
       - MLFLOW_TRACKING_URI=http://0.0.0.0:5000
     command:
       - mlflow
@@ -32,10 +32,7 @@ services:
       - "5000"
 
   trainer:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.trainer
-    container_name: mlops_trainer
+    image: ${DOCKERHUB_USERNAME}/trainer:latest
     depends_on:
       - mlflow
     working_dir: /app
@@ -43,8 +40,7 @@ services:
       - MLFLOW_TRACKING_URI=http://mlflow:5000
     volumes:
       - .:/app
-      - ./mlruns:/mlflow/artifacts
-      - ./mlflow.db:/mlflow/db/mlflow.db
+      - ./mlflow:/mlflow
     command: >
       /bin/bash -c "
       python src/fetch_data.py &&
@@ -55,10 +51,7 @@ services:
       "
 
   api:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
-    container_name: mlops_api
+    image: ${DOCKERHUB_USERNAME}/mlops-api:latest
     depends_on:
       - mlflow
     ports:
@@ -68,5 +61,4 @@ services:
     environment:
       - MLFLOW_TRACKING_URI=http://mlflow:5000
     volumes:
-      - ./mlruns:/mlflow/artifacts
-      - ./mlflow.db:/mlflow/db/mlflow.db
+      - ./mlflow:/mlflow

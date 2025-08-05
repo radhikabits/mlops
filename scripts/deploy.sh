@@ -1,14 +1,31 @@
 #!/bin/bash
+set -e
 
-# Pull latest image
-docker pull $IMAGE
+echo "[INFO] Loading environment variables..."
+source docker/.env
 
-# Stop and remove existing container
-docker rm -f mlops_api || true
+echo "[INFO] Pulling latest images from Docker Hub..."
+docker pull ${DOCKERHUB_USERNAME}/mlops-api:latest
+docker pull ${DOCKERHUB_USERNAME}/trainer:latest
 
-# Start new container
-docker run -d \
-  --name mlops_api \
-  -p 8000:8000 \
-  --env-file ./api/.env.api \
-  $IMAGE
+echo "[INFO] Stopping existing containers..."
+docker-compose --env-file docker/.env down
+
+echo "[INFO] Starting services using docker-compose..."
+docker-compose --env-file docker/.env up -d
+
+echo "[INFO] Waiting for containers to stabilize..."
+sleep 5
+
+echo "[INFO] Checking container status..."
+docker ps
+
+echo "[INFO] Verifying MLflow tracking server..."
+if curl -s http://localhost:5000 | grep -i mlflow; then
+  echo "[SUCCESS] MLflow is reachable."
+else
+  echo "[WARN] MLflow may not be reachable. Check logs below."
+fi
+
+echo "[INFO] Showing logs for API service..."
+docker logs -f api

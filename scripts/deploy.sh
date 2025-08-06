@@ -30,4 +30,7 @@ else
 fi
 
 echo "[INFO] Showing logs for API service..."
-docker logs -f api
+docker logs -f mlops-api
+
+echo "[INFO] Showing logs for Trainer service..."
+docker logs -f mlops_trainer

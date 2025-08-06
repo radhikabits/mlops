@@ -33,6 +33,7 @@ services:
 
   trainer:
     image: ${DOCKERHUB_USERNAME}/trainer:latest
+    container_name: mlops_trainer
     depends_on:
       - mlflow
     working_dir: /app
@@ -52,6 +53,7 @@ services:
 
   api:
     image: ${DOCKERHUB_USERNAME}/mlops-api:latest
+    container_name: mlops-api
     depends_on:
       - mlflow
     ports:

@@ -165,14 +165,14 @@ pytest tests/
 # Install WSL
     1. wsl --install
 
-# Build the image and run the container
+# Build the image and run the container locally
     1. Open WSL Terminal or PowerShell
     2. Navigate to Your Project Directory
         cd /mnt/c/BITS/Degree/Sem3/MLOps/Assignment/mlops
     3. Build the Docker Image
-        docker-compose build
+        docker compose -f docker-compose.local.yml build
     4. Run the Docker Container
-        docker-compose up
+        docker compose -f docker-compose.local.yml up
     5. You can now visit:
         API: http://localhost:8000
         MLflow UI: http://localhost:5000

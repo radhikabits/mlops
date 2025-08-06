@@ -34,3 +34,10 @@ docker logs -f mlops-api
 
 echo "[INFO] Showing logs for Trainer service..."
 docker logs -f mlops_trainer
+
+echo "[INFO] Stopping all services..."
+docker compose down
+echo "[INFO] Deployment script completed successfully."
+exit 0
+# End of deploy.sh
+# This script is intended to be run in a CI/CD pipeline or manually for deployment purposes.

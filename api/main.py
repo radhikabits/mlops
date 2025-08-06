@@ -41,4 +41,3 @@ Instrumentator(
     should_ignore_untemplated=True,
     excluded_handlers=["/metrics", "/health"]
 ).instrument(app).expose(app)
-

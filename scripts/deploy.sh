@@ -30,10 +30,10 @@ else
 fi
 
 echo "[INFO] Showing logs for API service..."
-docker logs -f mlops-api
+timeout 10s docker logs -f mlops-api
 
 echo "[INFO] Showing logs for Trainer service..."
-docker logs -f mlops_trainer
+timeout 10s docker logs -f mlops_trainer
 
 echo "[INFO] Stopping all services..."
 docker compose down

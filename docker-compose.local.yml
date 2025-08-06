@@ -2,6 +2,7 @@ services:
   db-init:
     # only runs once to create folders with correct perms
     image: alpine
+    container_name: mlops_db_init
     volumes:
       - ./mlflow:/mlflow
     entrypoint: |
@@ -10,6 +11,7 @@ services:
 
   mlflow:
     image: ghcr.io/mlflow/mlflow:v3.2.0rc0
+    container_name: mlops_mlflow
     depends_on: ["db-init"]
     ports:
       - "5000:5000"
@@ -70,3 +72,19 @@ services:
     volumes:
       - ./mlruns:/mlflow/artifacts
       - ./mlflow.db:/mlflow/db/mlflow.db
+
+  prometheus:
+    image: prom/prometheus
+    container_name: mlops_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    container_name: mlops_grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin

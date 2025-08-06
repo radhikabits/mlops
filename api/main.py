@@ -4,6 +4,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from router import agent
+from prometheus_fastapi_instrumentator import Instrumentator
+
 
 # Load environment variables
 if os.environ.get("DOCKER_ENV", "false").lower() == "true":
@@ -32,3 +34,11 @@ app.include_router(agent.router)
 async def health():
     """Health check endpoint"""
     return {"status": "healthy"}
+
+# Instrumentation for Prometheus
+Instrumentator(
+    should_group_status_codes=True,
+    should_ignore_untemplated=True,
+    excluded_handlers=["/metrics", "/health"]
+).instrument(app).expose(app)
+

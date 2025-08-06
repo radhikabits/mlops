@@ -150,6 +150,8 @@ API base URL: http://127.0.0.1:8000
 Interactive Swagger Docs: http://127.0.0.1:8000/docs
 ReDoc Docs: http://127.0.0.1:8000/redoc
 Health Check Endpoint: http://127.0.0.1:8000/health
+Metrics Endpoint: http://127.0.0.1:8000/metrics
+
 
 # To Run the Tests
 pytest tests/
@@ -186,3 +188,29 @@ pytest tests/
 
 # Run flake8
 flake8 . # This is a linting tool for enforcing coding style in Python code
+# Monitoring with Prometheus & Grafana
+This project includes built-in observability using Prometheus for metrics collection and Grafana for visualization.
+🔧 Access URLs (Local Deployment)
+| Service | URL | Description | 
+| Prometheus | http://localhost:9090 | Metrics explorer & query UI | 
+| Grafana | http://localhost:3000 | Dashboards & visualizations | 
+
+
+Grafana login: admin / admin
+Prometheus Queries
+Use these queries in Prometheus or Grafana panels:
+- Total HTTP requests
+    http_requests_total
+- Request latency histogram
+    http_request_duration_seconds_bucket
+- Error rate (5xx responses)
+    http_requests_total{status_code=~"5.."}
+- Requests per endpoint
+    sum by (handler) (http_requests_total)
+
+# Grafana Dashboard Setup
+- Open Grafana → + → Import
+- Use Dashboard ID: 16110 (FastAPI Observability)
+- Select Prometheus as the data source
+- Click Import
+This dashboard includes request counts, latency, status codes, and endpoint-level metrics.

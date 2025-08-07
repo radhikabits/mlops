@@ -1,3 +1,8 @@
 fastapi==0.116.1 # It is used for building APIs with Python 3.7+ based on standard Python type hints.
 pydantic==2.11.7 # It is used for data validation and settings management.
 uvicorn==0.35.0 # It is an ASGI server for running FastAPI applications.
+pandas==2.3.1 # It is used for data manipulation and analysis.
+mlflow==3.1.4 # It is used for managing the machine learning lifecycle, including experimentation, reproducibility, and deployment.
+python-dotenv==1.1.1 # It is used for reading key-value pairs from a .env file and setting them as environment variables.
+flake8==7.3.0 # It is a tool for enforcing coding style in Python code.
+prometheus-fastapi-instrumentator==7.1.0

@@ -1,8 +1,9 @@
 import os
-import logging
 import importlib
+import sys
 import pytest
 import tempfile
+
 
 @pytest.fixture
 def setup_logger(monkeypatch):
@@ -14,6 +15,7 @@ def setup_logger(monkeypatch):
     monkeypatch.setenv("LOG_LEVEL", "DEBUG")
 
     # Reload to reset logger state
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
     import utils.logger
     importlib.reload(utils.logger)
 

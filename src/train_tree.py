@@ -1,3 +1,5 @@
+"""train_tree.py
+This script trains a Decision Tree Regressor on the California Housing dataset,"""
 import os
 import sys
 import mlflow
@@ -10,10 +12,13 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 # Add project root to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from utils.common import load_config, save_model
+from utils.common import load_config, save_model, load_environment_variables
 from utils.logger import get_logger
 
 logger = get_logger(__name__)
+
+load_environment_variables()
+
 
 def train_decision_tree():
     """
@@ -40,6 +45,10 @@ def train_decision_tree():
 
     logger.info("Starting MLflow run for Decision Tree...")
     try:
+        # Set MLflow Tracking URI from env variable
+        tracking_url = os.getenv("MLFLOW_TRACKING_URI")
+        logger.info(f"MLflow Tracking URI: {tracking_url}")
+        mlflow.set_tracking_uri(tracking_url)
         mlflow.set_experiment("california_housing")
         with mlflow.start_run(run_name="DecisionTreeRegressor"):
             model = DecisionTreeRegressor(max_depth=params["max_depth"])
@@ -77,6 +86,12 @@ def train_decision_tree():
         duration = time.time() - start_time
         logger.info(f"Total training time: {duration:.2f} seconds")
         mlflow.log_metric("training_time_sec", duration)
+        mlflow.end_run()
+
+
+def main():
+    train_decision_tree()
+
 
 if __name__ == "__main__":
-    train_decision_tree()
+    main()

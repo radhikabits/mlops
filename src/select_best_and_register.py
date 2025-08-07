@@ -1,3 +1,5 @@
+"""select_best_and_register.py
+This script selects the best model from the MLflow registry based on a specified metric,"""
 import os
 import sys
 from typing import Optional
@@ -6,8 +8,10 @@ from mlflow.tracking import MlflowClient
 from mlflow.exceptions import RestException
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from utils.logger import get_logger
+from utils.common import load_environment_variables
 
 logger = get_logger(__name__)
+
 
 def register_best_from_registry(
     candidate_models: list,
@@ -19,6 +23,7 @@ def register_best_from_registry(
 
     if tracking_uri:
         mlflow.set_tracking_uri(tracking_uri)
+        mlflow.set_registry_uri(tracking_uri)
         logger.info("Tracking URI set to: %s", tracking_uri)
 
     client = MlflowClient()
@@ -61,17 +66,17 @@ def register_best_from_registry(
         model_uri=model_uri,
         name=best_model_name
     )
-
     logger.info("Best model (run_id=%s, %s=%.5f) registered as '%s' (version %s)",
                 best_run_id, metric_key, best_metric, best_model_name, result.version)
 
     return result.version
 
 
-if __name__ == "__main__":
-    RELATIVE_PATH = "mlruns"
-    TRACKING_URI = f"file:///{os.path.abspath(RELATIVE_PATH).replace(os.sep, '/')}"
-    
+def main():
+    load_environment_variables()
+    # Load tracking URI from environment variable
+    TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
+
     register_best_from_registry(
         candidate_models=["decision_tree", "linear_regression"],
         metric_key="mse",
@@ -79,3 +84,7 @@ if __name__ == "__main__":
         best_model_name="best_model",
         tracking_uri=TRACKING_URI
     )
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,18 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install bash
+RUN apt-get update && apt-get install -y bash
+
+# Copy only what is needed
+COPY src/ src/
+COPY data/ data/
+COPY utils/ utils/
+COPY models/ models/
+COPY .env.docker .
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+CMD ["/bin/bash", "-c", "echo Bash is working!"]

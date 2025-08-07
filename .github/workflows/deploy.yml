@@ -1,0 +1,68 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # or your deployment branch
+      - develop  # if you want to deploy from develop branch as well
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Linter and Test Dependencies
+        run: |
+          pip install flake8 pytest
+
+      - name: Lint Code
+        run: flake8 .
+
+      - name: Run Tests
+        run: pytest
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Set Image Tag
+        id: vars
+        run: echo "IMAGE_TAG=$(date +%s)" >> $GITHUB_ENV
+
+      - name: Build Trainer Image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/trainer:latest -f docker/Dockerfile.trainer .
+
+      - name: Build API Image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/mlops-api:latest -f docker/Dockerfile .
+
+      - name: Push Trainer Image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/trainer:latest
+
+      - name: Push API Image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/mlops-api:latest
+      
+      - name: Make deploy script executable
+        run: chmod +x scripts/deploy.sh
+
+      - name: Install Docker Compose CLI plugin
+        run: |
+          mkdir -p ~/.docker/cli-plugins
+          curl -SL https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+          chmod +x ~/.docker/cli-plugins/docker-compose
+          docker compose version
+
+      - name: Deploy (Optional)
+        run: |
+          bash ./scripts/deploy.sh
+        env:
+          IMAGE: "${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:latest"

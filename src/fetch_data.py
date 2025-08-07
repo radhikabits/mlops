@@ -1,9 +1,15 @@
 # Import necessary libraries
 import os
-import pandas as pd
+import sys
 from sklearn.datasets import fetch_california_housing
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from utils.logger import get_logger
 
-def save_housing_data(output_dir: str = "data/raw", filename: str = "housing.csv") -> None:
+# Initialize logger
+logger = get_logger(__name__)
+
+
+def save_housing_data(output_dir: str = "data/raw", filename: str = "housing.csv") -> str:
     """
     Fetches the California housing dataset and saves it as a CSV file.
 
@@ -26,8 +32,13 @@ def save_housing_data(output_dir: str = "data/raw", filename: str = "housing.csv
     # Save the dataset to CSV (without row index)
     df.to_csv(output_path, index=False)
 
-    print(f"Data successfully saved to {output_path}")
+    logger.info(f"Data successfully saved to {output_path}")
+    return output_path
+
+
+def main():
+    save_housing_data()
+
 
 if __name__ == "__main__":
-    # Entry point of the script
-    save_housing_data()
+    main()

@@ -1,3 +1,5 @@
+"""Preprocessing script for the California Housing dataset.
+This script loads the dataset, removes outliers, scales features, and splits the data into training"""
 import os
 import sys
 import pandas as pd
@@ -86,7 +88,13 @@ def preprocess_data(
     return X_train, X_test, y_train, y_test
 
 
-if __name__ == "__main__":
-    df = load_data(RAW_DATA_PATH)
-    X_train, X_test, y_train, y_test = preprocess_data(df)
+def main(data_path: str = RAW_DATA_PATH):
+    df = load_data(data_path)
+    preprocess_data(df)
     logger.info("Preprocessing completed successfully.")
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        raise ValueError("Usage: python preprocess.py <data_path>")
+    main(sys.argv[1])

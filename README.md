@@ -1,216 +1,271 @@
-# mlops
-# MLOps Project: Build, Track, Package, Deploy and Monitor an ML Model
 
-## Project Overview
+# MLOps Project: Build, Track, Package, Deploy, and Monitor an ML Model
 
-This project demonstrates a complete **MLOps pipeline** using best practices. The goal is to train, track, version, deploy, and monitor a machine learning model using a well-known dataset: **California Housing** (regression task) or **Iris** (classification task).
+## 🚀 Overview
 
-We have chosen dataset: **California Housing**
----
+This project demonstrates a complete **MLOps pipeline** following industry best practices. It covers the full lifecycle of a machine learning model—from data acquisition and preprocessing to model training, versioning, packaging, deployment, and monitoring.
 
-## Objectives
-
-- Version control code and data
-- Track experiments and model artifacts using MLflow
-- Package the ML model as a REST API using FastAPI
-- Containerize the API with Docker
-- Automate CI/CD using GitHub Actions
-- Implement logging and basic monitoring
+**Dataset used**: [California Housing Dataset](https://scikit-learn.org/stable/datasets/real_world.html#california-housing-dataset)  
+**Task**: Regression (predicting median house value)
 
 ---
 
-## Project Architecture
+## 🎯 Objectives
+
+- ✅ Version control data and code
+- ✅ Track experiments and model artifacts using **MLflow**
+- ✅ Serve the model as a REST API using **FastAPI**
+- ✅ Containerize the application using **Docker**
+- ✅ Automate CI/CD workflows using **GitHub Actions**
+- ✅ Implement logging and basic monitoring with **Prometheus + Grafana**
+- ✅ Auto-retrain model when new data arrives
+
+---
+
+## 🏗️ Project Structure
 
 ```bash
 mlops/
-├── data/                   → Raw and processed datasets
-│   ├── raw/                 
-│   └── processed/
-├── src/
-│   ├── fetch_data.py       → Fetches the California housing dataset
-│   ├── preprocess.py       → Preprocessing script
-│   ├── train_linear.py     → trains a Linear Regression model
-│   ├── train_tree.py       → trains a Decision Tree model
-│   └── select_best_and_register.py  → selects the best model from the MLflow registry
-├── utils/
-│   ├── common.py
-│   ├── config.ymal
-│   ├── logger.py    
-├── api/
-│   ├── router/agent.py     → FastAPI app with prediction endpoint
-│   ├── main.py             → Entrypoint for running the API
-│   └── requirements.txt    → API dependencies
-│   └── logger.py
-│   └── models.py    → API models
-│   └── model_loader.py      
-├── docker/
-│   ├── Dockerfile          → Docker build file
-│   └── Dockerfile.trainer
-├── test/                   → Contains pytest
-├── dvc.yaml                → DVC pipeline file (for California Housing)
-├── mlruns/                 → MLflow tracking logs
-├── docker-cpmpose.yml      → compose file
-├── model/                  → Saved model artifacts
-├── logs/                   → Prediction and app logs
-├── README.md               → Project summary (this file)
-├── summary.pdf             → 1-page architecture summary
-├── video-demo.mp4          → 5-min project walkthrough
-└── requirements.txt        → Project-level dependencies
+├── api/                     # FastAPI application
+│   ├── main.py              # App entry point
+│   ├── router/agent.py      # Prediction endpoint
+│   ├── model_loader.py      # Load latest model
+│   ├── models.py            # Input/output schema
+│   ├── logger.py            # API logger
+│   └── requirements.txt     # API dependencies
+├── data/
+│   ├── new/                 # New Raw dataset                    
+│   ├── raw/                 # Raw dataset
+│   └── processed/           # Cleaned & preprocessed data
+├── docker/                 
+│   ├── Dockerfile           # For serving the API
+│   └── Dockerfile.trainer   # For model training
+├── logs/                    # Application and prediction logs
+├── mlruns/                  # MLflow run tracking
+├── model/                   # Saved model artifacts
+├── src/                     # Source scripts
+│   ├── fetch_data.py        # Load raw dataset
+│   ├── preprocess.py        # Clean and transform data
+│   ├── train_linear.py      # Linear Regression model
+│   ├── train_tree.py        # Decision Tree model
+│   └── select_best_and_register.py  # Registers best model in MLflow
+│   └── run_training_pipeline.py  # Runs the training pipeline
+│   └── watch_and_train.py  # poll for retraining the model
+├── test/                    # Unit tests with pytest
+├── utils/                   
+│   ├── common.py            
+│   ├── config.yaml          
+│   └── logger.py            
+├── dvc.yaml                 # DVC pipeline config
+├── docker-compose.yml       # Docker Compose for Remote setup
+├── docker-compose.local.yml # Docker Compose for Local setup
+├── requirements.txt         # Project-level dependencies
+├── summary.pdf              # Architecture overview
+├── video-demo.mp4           # Project walkthrough
+└── README.md                # This file
+```
 
-## Project Setup
-Prerequisites
-Make sure you have the following installed:
+---
 
-Python 3.8+
+## 🛠️ Setup Instructions
 
-pip (Python package manager)
+### 📦 Prerequisites
 
-venv for isolated environments
-Clone and Set Up the Project
+- Python 3.8+
+- pip
+- [venv](https://docs.python.org/3/library/venv.html)
+- Docker Desktop
+- WSL (for Windows)
+- Git
 
-# Clone the repository
+### 🔧 Installation
+
+```bash
+# Clone the repo
 git clone https://github.com/radhikabits/mlops.git
+cd mlops
 
-# Create a virtual environment (optional but recommended)
+# Create a virtual environment
 python -m venv venv
-source venv/bin/activate     # On Linux/macOS
-venv\Scripts\activate        # On Windows
+source venv/bin/activate    # Linux/macOS
+venv\Scripts\activate       # Windows
 
-# Install dependencies (if any)
+# Install dependencies
 pip install -r requirements.txt
+```
+---
 
-# Steps to follow
+## 🚀 Run the Full Training Pipeline
 
-# 1. Raw Data
-# Run below file to fetch the raw data
-py "src\fetch_data.py"
+```bash
+python src/run_training_pipeline.py data/raw/housing.csv
 
-# Data Version Control, is an open-source tool that helps you manage and version control data
+## 🔍 What This Pipeline Does - Step-by-Step Execution
 
-# How It Works
-- dvc init → Sets up DVC in your Git repo.
-- Starts tracking your dataset.
-    dvc add data/raw/housing.csv (to track it with DVC)
-- dvc push → Uploads data to remote storage.
-- dvc pull → Downloads exact data version when needed.
-- dvc run → Defines pipeline stages with dependencies and outputs.
+### 📁 1. Data Acquisition
 
-# 2. Preprocessing
-The California Housing dataset is preprocessed before model training to ensure data quality and consistency. Preprocessing includes:
+```bash
+python src/fetch_data.py
+```
 
-1. Dropping missing values
-2. Removing outliers using the IQR method
-3. Feature-target separation
-4. Scaling features with StandardScaler
-5. Splitting into training and testing sets
+**Track data using DVC:**
 
-# How to Run
-py "src\preprocess.py"
+```bash
+dvc init
+dvc add data/raw/housing.csv
+dvc push  # to remote storage
+```
 
-# Model Training with MLflow
-# We use MLflow to manage the end-to-end model lifecycle:
+### 🧹 2. Data Preprocessing
 
-1. Train two models: Linear Regression and Decision Tree
+```bash
+python src/preprocess.py
+```
 
-2. Log parameters, metrics (MSE, R²), and artifacts
+Steps:
+- Remove missing values
+- Remove outliers (IQR method)
+- Feature scaling (StandardScaler)
+- Train-test split
 
-3. Compare and select the best model
+---
 
-4. Register the best model in the MLflow Model Registry
+### 🎓 3. Model Training & Experiment Tracking
 
-🔧 3. How to Run
-# Train models and log experiments
+Train models and log results with MLflow:
 
+```bash
 python src/train_linear.py
 python src/train_tree.py
+```
 
-# Launch MLflow UI (optional)
-mlflow ui  # Visit http://127.0.0.1:5000
+Launch MLflow UI (optional):
 
-# 4. Select and register the best model
+```bash
+mlflow ui  # http://127.0.0.1:5000
+```
 
-After training multiple models, the `select_best_and_register.py` script compares them using a selected metric (default: `mse`) and registers the best-performing model in MLflow.
+---
 
-**Steps Performed:**
-- Retrieves the MLflow experiment runs
-- Selects the run with the lowest MSE
-- Checks if the model is already registered
-- Registers the model (or adds a new version)
+### 🏆 4. Select and Register Best Model
 
+```bash
 python src/select_best_and_register.py
+```
 
-# To Run the API
+This compares model runs, selects the one with lowest MSE, and registers it in the MLflow model registry.
+
+
+### 🌐 Serve the Model via FastAPI
+
+```bash
 cd api
 pip install -r requirements.txt
 uvicorn main:app --reload
- # in debug mode
-uvicorn main:app --reload --log-level debug
+```
 
-API base URL: http://127.0.0.1:8000
-Interactive Swagger Docs: http://127.0.0.1:8000/docs
-ReDoc Docs: http://127.0.0.1:8000/redoc
-Health Check Endpoint: http://127.0.0.1:8000/health
-Metrics Endpoint: http://127.0.0.1:8000/metrics
+Access:
 
+- Base URL: `http://127.0.0.1:8000`
+- Swagger UI: `http://127.0.0.1:8000/docs`
+- Redoc: `http://127.0.0.1:8000/redoc`
+- Health check: `http://127.0.0.1:8000/health`
+- Metrics: `http://127.0.0.1:8000/metrics`
 
-# To Run the Tests
-pytest tests/
+---
 
-# Build and run the Docker container
+### ✅ Run Unit Tests
 
-# Install Docker Desktop
-    1. Go to Docker official website
-        https://www.docker.com/products/docker-desktop/
-    2. Download Docker Desktop for Windows
-    3. Install it following the instructions.
-    4. Restart your machine after installation (important).
-# Install WSL
-    1. wsl --install
+```bash
+pytest test/
+```
 
-# Build the image and run the container locally
-    1. Open WSL Terminal or PowerShell
-    2. Navigate to Your Project Directory
-        cd /mnt/c/BITS/Degree/Sem3/MLOps/Assignment/mlops
-    3. Build the Docker Image
-        docker compose -f docker-compose.local.yml build
-    4. Run the Docker Container
-        docker compose -f docker-compose.local.yml up
-    5. You can now visit:
-        API: http://localhost:8000
-        MLflow UI: http://localhost:5000
-# CICD
-1. GitHub Secrets
-- Go to your GitHub repo → Settings → Secrets and variables → Actions → New repository secret, and
-    Secret  Name	            Description
-    DOCKERHUB_USERNAME	    Your Docker Hub username
-    DOCKERHUB_TOKEN	        Docker Hub access token/password
-    DOCKER_IMAGE_NAME	    e.g., yourusername/mlops-api
+---
 
-# Run flake8
-flake8 . # This is a linting tool for enforcing coding style in Python code
-# Monitoring with Prometheus & Grafana
-This project includes built-in observability using Prometheus for metrics collection and Grafana for visualization.
-🔧 Access URLs (Local Deployment)
-| Service | URL | Description | 
-| Prometheus | http://localhost:9090 | Metrics explorer & query UI | 
-| Grafana | http://localhost:3000 | Dashboards & visualizations | 
+## 🐳 Docker Deployment
 
+### 🧱 Build & Run Locally
 
-Grafana login: admin / admin
-Prometheus Queries
-Use these queries in Prometheus or Grafana panels:
-- Total HTTP requests
-    http_requests_total
-- Request latency histogram
-    http_request_duration_seconds_bucket
-- Error rate (5xx responses)
-    http_requests_total{status_code=~"5.."}
-- Requests per endpoint
-    sum by (handler) (http_requests_total)
+Ensure Docker and WSL are installed.
 
-# Grafana Dashboard Setup
-- Open Grafana → + → Import
-- Use Dashboard ID: 16110 (FastAPI Observability)
-- Select Prometheus as the data source
-- Click Import
-This dashboard includes request counts, latency, status codes, and endpoint-level metrics.
+```bash
+# Build and run container
+docker compose -f docker-compose.yml build
+docker compose -f docker-compose.yml up
+```
+
+Access:
+
+- API: `http://localhost:8000`
+- MLflow UI: `http://localhost:5000`
+
+---
+
+## ⚙️ CI/CD with GitHub Actions
+
+### 🔐 GitHub Secrets (Setup)
+
+| Secret Name         | Description                        |
+|---------------------|------------------------------------|
+| `DOCKERHUB_USERNAME` | Your Docker Hub username           |
+| `DOCKERHUB_TOKEN`    | Docker Hub access token/password   |
+| `DOCKER_IMAGE_NAME`  | e.g., `yourusername/mlops-api`     |
+
+### 🧪 Lint Code
+
+```bash
+flake8 .
+```
+
+---
+
+## 📊 Monitoring with Prometheus & Grafana
+
+### Local URLs
+
+| Service     | URL                         | Description              |
+|-------------|-----------------------------|--------------------------|
+| Prometheus  | http://localhost:9090       | Metrics explorer         |
+| Grafana     | http://localhost:3000       | Dashboard visualization  |
+
+- **Grafana credentials**: `admin / admin`
+
+### 📈 Prometheus Queries
+
+- Total requests: `http_requests_total`
+- Latency histogram: `http_request_duration_seconds_bucket`
+- Error rate: `http_requests_total{status_code=~"5.."}`  
+- Per endpoint: `sum by (handler) (http_requests_total)`
+
+### 🧩 Grafana Dashboard Import
+
+1. Open Grafana → `+` → **Import**
+2. Dashboard ID: `16110` (FastAPI Observability)
+3. Set data source: `Prometheus`
+4. Click **Import**
+
+---
+
+## 🔁 Automatic Model Retraining on New Data
+
+A file watcher observes the `data/new/` folder and retriggers the pipeline when a new `.csv` file is added.
+
+### 👁️ Watcher Behavior
+
+- **Monitors**: `data/new/`
+- **Trigger**: New file addition
+- **Action**: Runs `run_training_pipeline.py`
+- **Observer**: `PollingObserver` (Docker-compatible)
+
+---
+
+## 📄 Resources
+
+- 📄 `summary.pdf` – High-level architecture
+- 🎥 `video-demo.mp4` – 5-min project walkthrough
+
+---
+
+## 🙌 Acknowledgements
+
+This project was built as part of the **BITS Pilani WILP MLOps coursework**, integrating key learnings on ML lifecycle management, deployment, and observability in real-world ML systems.

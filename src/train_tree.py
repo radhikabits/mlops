@@ -86,7 +86,12 @@ def train_decision_tree():
         duration = time.time() - start_time
         logger.info(f"Total training time: {duration:.2f} seconds")
         mlflow.log_metric("training_time_sec", duration)
+        mlflow.end_run()
+
+
+def main():
+    train_decision_tree()
 
 
 if __name__ == "__main__":
-    train_decision_tree()
+    main()

@@ -45,15 +45,13 @@ services:
       - MLFLOW_TRACKING_URI=http://mlflow:5000
     volumes:
       - .:/app
+      - ./data:/app/data
       - ./mlruns:/mlflow/artifacts
       - ./mlflow.db:/mlflow/db/mlflow.db
     command: >
       /bin/bash -c "
-      python src/fetch_data.py &&
-      python src/preprocess.py &&
-      python src/train_linear.py &&
-      python src/train_tree.py &&
-      python src/select_best_and_register.py
+      python src/run_training_pipeline.py data/raw/housing.csv && \
+      python src/watch_and_train.py
       "
 
   api:

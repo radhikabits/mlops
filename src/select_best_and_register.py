@@ -72,7 +72,7 @@ def register_best_from_registry(
     return result.version
 
 
-if __name__ == "__main__":
+def main():
     load_environment_variables()
     # Load tracking URI from environment variable
     TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
@@ -84,3 +84,7 @@ if __name__ == "__main__":
         best_model_name="best_model",
         tracking_uri=TRACKING_URI
     )
+
+
+if __name__ == "__main__":
+    main()

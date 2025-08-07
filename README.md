@@ -1,7 +1,7 @@
 
 # MLOps Project: Build, Track, Package, Deploy, and Monitor an ML Model
 
-## 🚀 Overview
+## Overview
 
 This project demonstrates a complete **MLOps pipeline** following industry best practices. It covers the full lifecycle of a machine learning model—from data acquisition and preprocessing to model training, versioning, packaging, deployment, and monitoring.
 
@@ -10,19 +10,19 @@ This project demonstrates a complete **MLOps pipeline** following industry best 
 
 ---
 
-## 🎯 Objectives
+## Objectives
 
-- ✅ Version control data and code
-- ✅ Track experiments and model artifacts using **MLflow**
-- ✅ Serve the model as a REST API using **FastAPI**
-- ✅ Containerize the application using **Docker**
-- ✅ Automate CI/CD workflows using **GitHub Actions**
-- ✅ Implement logging and basic monitoring with **Prometheus + Grafana**
-- ✅ Auto-retrain model when new data arrives
+- Version control data and code
+- Track experiments and model artifacts using **MLflow**
+- Serve the model as a REST API using **FastAPI**
+- Containerize the application using **Docker**
+- Automate CI/CD workflows using **GitHub Actions**
+- Implement logging and basic monitoring with **Prometheus + Grafana**
+- Auto-retrain model when new data arrives
 
 ---
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```bash
 mlops/
@@ -67,9 +67,9 @@ mlops/
 
 ---
 
-## 🛠️ Setup Instructions
+## Setup Instructions
 
-### 📦 Prerequisites
+### Prerequisites
 
 - Python 3.8+
 - pip
@@ -95,14 +95,14 @@ pip install -r requirements.txt
 ```
 ---
 
-## 🚀 Run the Full Training Pipeline
+## Run the Full Training Pipeline
 
 ```bash
 python src/run_training_pipeline.py data/raw/housing.csv
 
-## 🔍 What This Pipeline Does - Step-by-Step Execution
+## What This Pipeline Does - Step-by-Step Execution
 
-### 📁 1. Data Acquisition
+### 1. Data Acquisition
 
 ```bash
 python src/fetch_data.py
@@ -116,7 +116,7 @@ dvc add data/raw/housing.csv
 dvc push  # to remote storage
 ```
 
-### 🧹 2. Data Preprocessing
+### 2. Data Preprocessing
 
 ```bash
 python src/preprocess.py
@@ -130,7 +130,7 @@ Steps:
 
 ---
 
-### 🎓 3. Model Training & Experiment Tracking
+### 3. Model Training & Experiment Tracking
 
 Train models and log results with MLflow:
 
@@ -147,7 +147,7 @@ mlflow ui  # http://127.0.0.1:5000
 
 ---
 
-### 🏆 4. Select and Register Best Model
+### 4. Select and Register Best Model
 
 ```bash
 python src/select_best_and_register.py
@@ -156,7 +156,7 @@ python src/select_best_and_register.py
 This compares model runs, selects the one with lowest MSE, and registers it in the MLflow model registry.
 
 
-### 🌐 Serve the Model via FastAPI
+### Serve the Model via FastAPI
 
 ```bash
 cd api
@@ -174,7 +174,7 @@ Access:
 
 ---
 
-### ✅ Run Unit Tests
+### Run Unit Tests
 
 ```bash
 pytest test/
@@ -182,9 +182,9 @@ pytest test/
 
 ---
 
-## 🐳 Docker Deployment
+## Docker Deployment
 
-### 🧱 Build & Run Locally
+### Build & Run Locally
 
 Ensure Docker and WSL are installed.
 
@@ -201,9 +201,9 @@ Access:
 
 ---
 
-## ⚙️ CI/CD with GitHub Actions
+## CI/CD with GitHub Actions
 
-### 🔐 GitHub Secrets (Setup)
+### GitHub Secrets (Setup)
 
 | Secret Name         | Description                        |
 |---------------------|------------------------------------|
@@ -211,7 +211,7 @@ Access:
 | `DOCKERHUB_TOKEN`    | Docker Hub access token/password   |
 | `DOCKER_IMAGE_NAME`  | e.g., `yourusername/mlops-api`     |
 
-### 🧪 Lint Code
+### Lint Code
 
 ```bash
 flake8 .
@@ -219,7 +219,7 @@ flake8 .
 
 ---
 
-## 📊 Monitoring with Prometheus & Grafana
+## Monitoring with Prometheus & Grafana
 
 ### Local URLs
 
@@ -230,14 +230,14 @@ flake8 .
 
 - **Grafana credentials**: `admin / admin`
 
-### 📈 Prometheus Queries
+### Prometheus Queries
 
 - Total requests: `http_requests_total`
 - Latency histogram: `http_request_duration_seconds_bucket`
 - Error rate: `http_requests_total{status_code=~"5.."}`  
 - Per endpoint: `sum by (handler) (http_requests_total)`
 
-### 🧩 Grafana Dashboard Import
+### Grafana Dashboard Import
 
 1. Open Grafana → `+` → **Import**
 2. Dashboard ID: `16110` (FastAPI Observability)
@@ -246,11 +246,11 @@ flake8 .
 
 ---
 
-## 🔁 Automatic Model Retraining on New Data
+## Automatic Model Retraining on New Data
 
 A file watcher observes the `data/new/` folder and retriggers the pipeline when a new `.csv` file is added.
 
-### 👁️ Watcher Behavior
+### Watcher Behavior
 
 - **Monitors**: `data/new/`
 - **Trigger**: New file addition
@@ -259,13 +259,13 @@ A file watcher observes the `data/new/` folder and retriggers the pipeline when 
 
 ---
 
-## 📄 Resources
+## Resources
 
-- 📄 `summary.pdf` – High-level architecture
-- 🎥 `video-demo.mp4` – 5-min project walkthrough
+- `summary.pdf` – High-level architecture
+- `video-demo.mp4` – 5-min project walkthrough
 
 ---
 
-## 🙌 Acknowledgements
+## Acknowledgements
 
 This project was built as part of the **BITS Pilani WILP MLOps coursework**, integrating key learnings on ML lifecycle management, deployment, and observability in real-world ML systems.
